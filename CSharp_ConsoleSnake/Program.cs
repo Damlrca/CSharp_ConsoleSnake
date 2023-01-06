@@ -12,7 +12,11 @@ namespace CSharp_ConsoleSnake
         static int score;
         static void Main(string[] args)
         {
+            Console.CursorVisible = false;
+
             PointType[,] m = new PointType[10, 20];
+
+            Console.SetWindowSize(m.GetLength(1) * 2 + 4, m.GetLength(0) + 2);
 
             for (int i = 0; i < m.GetLength(0) + 2; i++)
                 DrawPoint(i, 0, PointType.Border);
@@ -46,7 +50,7 @@ namespace CSharp_ConsoleSnake
             {
                 while (true)
                 {
-                    ConsoleKeyInfo temp = Console.ReadKey();
+                    ConsoleKeyInfo temp = Console.ReadKey(true);
                     switch (temp.Key)
                     {
                         case ConsoleKey.LeftArrow:
@@ -142,7 +146,7 @@ namespace CSharp_ConsoleSnake
             Console.Write("  ");
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.Black;
-            Console.SetCursorPosition(0, 12);
+            Console.SetCursorPosition(0, 0);
         }
     }
 
