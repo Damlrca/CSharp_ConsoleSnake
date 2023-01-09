@@ -15,7 +15,7 @@ namespace CSharp_ConsoleSnake
         {
             Console.CursorVisible = false;
 
-            PointType[,] m = new PointType[10, 20];
+            PointType[,] m = new PointType[20, 30];
 
             Console.SetWindowSize(m.GetLength(1) * 2 + 4, m.GetLength(0) + 2);
 
@@ -45,7 +45,7 @@ namespace CSharp_ConsoleSnake
 
             m[head.X, head.Y] = PointType.Head;
 
-            ConsoleKeyInfo pressedKey = new ConsoleKeyInfo(' ', ConsoleKey.RightArrow, false, false, false);
+            ConsoleKey pressedKey = ConsoleKey.RightArrow;
 
             Stopwatch sw = new Stopwatch();
 
@@ -55,41 +55,35 @@ namespace CSharp_ConsoleSnake
             {
                 sw.Restart();
 
-                ConsoleKeyInfo oldKey = pressedKey;
-                
-                //while (sw.ElapsedMilliseconds <= FrameDelay && oldKey == pressedKey)
-                //{
-                    if (Console.KeyAvailable)
+                if (Console.KeyAvailable)
+                {
+                    switch (Console.ReadKey(true).Key)
                     {
-                        ConsoleKeyInfo temp = Console.ReadKey(true);
-                        switch (temp.Key)
-                        {
-                            case ConsoleKey.LeftArrow:
-                                if (pressedKey.Key != ConsoleKey.RightArrow)
-                                    pressedKey = temp;
-                                break;
-                            case ConsoleKey.RightArrow:
-                                if (pressedKey.Key != ConsoleKey.LeftArrow)
-                                    pressedKey = temp;
-                                break;
-                            case ConsoleKey.UpArrow:
-                                if (pressedKey.Key != ConsoleKey.DownArrow)
-                                    pressedKey = temp;
-                                break;
-                            case ConsoleKey.DownArrow:
-                                if (pressedKey.Key != ConsoleKey.UpArrow)
-                                    pressedKey = temp;
-                                break;
-                            default:
-                                break;
-                        }
+                        case ConsoleKey.LeftArrow:
+                            if (pressedKey != ConsoleKey.RightArrow)
+                                pressedKey = ConsoleKey.LeftArrow;
+                            break;
+                        case ConsoleKey.RightArrow:
+                            if (pressedKey != ConsoleKey.LeftArrow)
+                                pressedKey = ConsoleKey.RightArrow;
+                            break;
+                        case ConsoleKey.UpArrow:
+                            if (pressedKey != ConsoleKey.DownArrow)
+                                pressedKey = ConsoleKey.UpArrow;
+                            break;
+                        case ConsoleKey.DownArrow:
+                            if (pressedKey != ConsoleKey.UpArrow)
+                                pressedKey = ConsoleKey.DownArrow;
+                            break;
+                        default:
+                            break;
                     }
-                //}
+                }
 
                 m[head.X, head.Y] = PointType.Snake;
-                DrawPoint(head.Y + 1, head.X + 1, m[head.X, head.Y]);
-                ConsoleKey nowPressed = pressedKey.Key; 
-                switch (nowPressed)
+                DrawPoint(head.Y + 1, head.X + 1, m[head.X, head.Y]); 
+
+                switch (pressedKey)
                 {
                     case ConsoleKey.LeftArrow:
                         head.Y = (head.Y + m.GetLength(1) - 1) % m.GetLength(1);
@@ -108,13 +102,13 @@ namespace CSharp_ConsoleSnake
                 }
 
                 m[head.X, head.Y] = PointType.Head;
-                snake.Enqueue(head);
+                DrawPoint(head.Y + 1, head.X + 1, m[head.X, head.Y]);
+                
                 Point back = snake.Dequeue();
                 m[back.X, back.Y] = PointType.Empty;
-
-                //Redraw(m);
-                DrawPoint(head.Y + 1, head.X + 1, m[head.X, head.Y]);
                 DrawPoint(back.Y + 1, back.X + 1, m[back.X, back.Y]);
+                
+                snake.Enqueue(head);
 
                 int t = 200 - (int)sw.ElapsedMilliseconds;
                 if (t > 0)
