@@ -1,23 +1,25 @@
-﻿namespace CSharp_ConsoleSnake
+﻿using System;
+
+namespace CSharp_ConsoleSnake
 {
     struct Point
     {
-        public int X { get; set; }
-        public int Y { get; set; }
+        public int Left { get; set; }
+        public int Top { get; set; }
 
-        public Point(int x, int y)
+        public Point(int left, int top)
         {
-            X = x;
-            Y = y;
+            Left = left;
+            Top = top;
         }
     }
 
     enum PointType
     {
-        Empty = 0,
-        Apple = 12,
-        Snake = 10,
-        Head = 2,
-        Border = 7
+        Empty = ConsoleColor.Black,
+        Apple = ConsoleColor.Red,
+        Snake = ConsoleColor.Green,
+        Head = ConsoleColor.DarkGreen,
+        Border = ConsoleColor.Gray
     }
 }
