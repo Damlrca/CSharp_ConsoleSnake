@@ -20,6 +20,7 @@ namespace CSharp_ConsoleSnake
         Apple = ConsoleColor.Red,
         Snake = ConsoleColor.Green,
         Head = ConsoleColor.DarkGreen,
-        Border = ConsoleColor.Gray
+        Border = ConsoleColor.Gray,
+        GameoverHead = ConsoleColor.Cyan
     }
 }

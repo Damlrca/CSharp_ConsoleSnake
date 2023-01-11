@@ -14,7 +14,6 @@ namespace CSharp_ConsoleSnake
         {
             snake = new Queue<Point>();
             Map = map;
-            Reset();
         }
 
         public void Reset()
@@ -30,30 +29,36 @@ namespace CSharp_ConsoleSnake
             pressedKey = ConsoleKey.RightArrow;
         }
 
-        public bool Move(ConsoleKey key, List<Point> ToRedraw) {
+        public bool Move(ConsoleKey key, List<Point> ToRedraw)
+        {
+            Point Back = snake.Dequeue();
+            Map[Back.Left, Back.Top] = PointType.Empty;
+            ToRedraw.Add(Back);
+
             switch (key)
             {
                 case ConsoleKey.LeftArrow:
                     if (pressedKey != ConsoleKey.RightArrow)
-                        pressedKey = ConsoleKey.LeftArrow;
+                        pressedKey = key;
                     break;
                 case ConsoleKey.RightArrow:
                     if (pressedKey != ConsoleKey.LeftArrow)
-                        pressedKey = ConsoleKey.RightArrow;
+                        pressedKey = key;
                     break;
                 case ConsoleKey.UpArrow:
                     if (pressedKey != ConsoleKey.DownArrow)
-                        pressedKey = ConsoleKey.UpArrow;
+                        pressedKey = key;
                     break;
                 case ConsoleKey.DownArrow:
                     if (pressedKey != ConsoleKey.UpArrow)
-                        pressedKey = ConsoleKey.DownArrow;
+                        pressedKey = key;
                     break;
                 default:
                     break;
             }
             Map[Head.Left, Head.Top] = PointType.Snake;
             ToRedraw.Add(Head);
+
             switch (pressedKey)
             {
                 case ConsoleKey.LeftArrow:
@@ -71,12 +76,10 @@ namespace CSharp_ConsoleSnake
                 default:
                     break;
             }
-            ToRedraw.Add(Head);
             snake.Enqueue(Head);
             Map[Head.Left, Head.Top] = PointType.Head;
-            Point Back = snake.Dequeue();
-            Map[Back.Left, Back.Top] = PointType.Empty;
-            ToRedraw.Add(Back);
+            ToRedraw.Add(Head);
+
             return true;
         }
     }

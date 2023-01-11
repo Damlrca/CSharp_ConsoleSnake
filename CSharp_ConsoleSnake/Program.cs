@@ -8,8 +8,12 @@ namespace CSharp_ConsoleSnake
         static void Main(string[] args)
         {
             Board board = new Board();
-            Console.ReadKey(true);
-            board.Start();
+            while (true)
+            {
+                board.Start();
+                Thread.Sleep(1000);
+                Console.ReadKey(true);
+            }
         }
     }
 }

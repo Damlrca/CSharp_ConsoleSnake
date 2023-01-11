@@ -10,30 +10,17 @@ namespace CSharp_ConsoleSnake
         private readonly PointType[,] map;
         private readonly Snake snake;
         private readonly int FrameDelay;
-        public Board(int width = 31, int height = 21, int frameDelay = 100)
+
+        public Board(int width = 31, int height = 21, int frameDelay = 200)
         {
             map = new PointType[width, height];
             snake = new Snake(map);
             FrameDelay = frameDelay;
-            Reset();
-        }
-
-        public void Reset()
-        {
-            Console.CursorVisible = false;
-            Console.SetWindowSize((map.GetLength(0) + 2) * 2, map.GetLength(1) + 2);
-
-            for (int i = 0; i < map.GetLength(0); i++)
-                for (int j = 0; j < map.GetLength(1); j++)
-                    ChangePointState(i, j, PointType.Empty);
-
-            snake.Reset();
-
-            Redraw();
         }
 
         public void Start()
         {
+            Reset();
             // TODO ReadKey to start
 
             Stopwatch stopwatch = new Stopwatch();
@@ -54,7 +41,7 @@ namespace CSharp_ConsoleSnake
 
                 foreach (var point in ToRedraw)
                 {
-                    DrawPointOnBoard(point.Left, point.Top, map[point.Left, point.Top]);
+                    DrawPointOnBoard(point.Left, point.Top);
                 }
 
                 int t = FrameDelay - (int)stopwatch.ElapsedMilliseconds;
@@ -63,6 +50,20 @@ namespace CSharp_ConsoleSnake
             }
 
             // TODO Game over
+        }
+
+        private void Reset()
+        {
+            Console.CursorVisible = false;
+            Console.SetWindowSize((map.GetLength(0) + 2) * 2, map.GetLength(1) + 2);
+
+            for (int i = 0; i < map.GetLength(0); i++)
+                for (int j = 0; j < map.GetLength(1); j++)
+                    map[i, j] = PointType.Empty;
+
+            snake.Reset();
+
+            Redraw();
         }
 
         private void Redraw()
@@ -81,12 +82,12 @@ namespace CSharp_ConsoleSnake
 
             for (int i = 0; i < map.GetLength(0); i++)
                 for (int j = 0; j < map.GetLength(1); j++)
-                    DrawPointOnBoard(i, j, map[i, j]);
+                    DrawPointOnBoard(i, j);
         }
 
-        private void DrawPointOnBoard(int left, int top, PointType type)
+        private void DrawPointOnBoard(int left, int top)
         {
-            DrawPoint(left + 1, top + 1, type);
+            DrawPoint(left + 1, top + 1, map[left, top]);
         }
 
         private void DrawPoint(int left, int top, PointType type)
@@ -94,11 +95,6 @@ namespace CSharp_ConsoleSnake
             Console.SetCursorPosition(left * 2, top);
             Console.BackgroundColor = (ConsoleColor)type;
             Console.Write("  ");
-        }
-
-        private void ChangePointState(int left, int top, PointType type)
-        {
-            map[left, top] = type;
         }
     }
 }
