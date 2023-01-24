@@ -31,9 +31,7 @@ namespace CSharp_ConsoleSnake
 
         public bool Move(ConsoleKey key, List<Point> ToRedraw)
         {
-            Point Back = snake.Dequeue();
-            Map[Back.Left, Back.Top] = PointType.Empty;
-            ToRedraw.Add(Back);
+            Point Back = snake.Peek();
 
             switch (key)
             {
@@ -56,9 +54,9 @@ namespace CSharp_ConsoleSnake
                 default:
                     break;
             }
-            Map[Head.Left, Head.Top] = PointType.Snake;
-            ToRedraw.Add(Head);
 
+            Point HeadNow = Head;
+            
             switch (pressedKey)
             {
                 case ConsoleKey.LeftArrow:
@@ -76,11 +74,33 @@ namespace CSharp_ConsoleSnake
                 default:
                     break;
             }
-            snake.Enqueue(Head);
-            Map[Head.Left, Head.Top] = PointType.Head;
-            ToRedraw.Add(Head);
 
-            return true;
+            if ((Head.Left == Back.Left && Head.Top == Back.Top && Map[Head.Left, Head.Top] != PointType.Apple) ||
+                Map[Head.Left, Head.Top] == PointType.Empty ||
+                Map[Head.Left, Head.Top] == PointType.Apple)
+            {
+                if (Map[Head.Left, Head.Top] != PointType.Apple)
+                {
+                    Map[Back.Left, Back.Top] = PointType.Empty;
+                    snake.Dequeue();
+                    ToRedraw.Add(Back);
+                }
+                
+                Map[HeadNow.Left, HeadNow.Top] = PointType.Snake;
+                ToRedraw.Add(HeadNow);
+                
+                Map[Head.Left, Head.Top] = PointType.Head;
+                ToRedraw.Add(Head);
+                snake.Enqueue(Head);
+                
+                return true;
+            }
+            else
+            {
+                Map[HeadNow.Left, HeadNow.Top] = PointType.GameoverHead;
+                ToRedraw.Add(HeadNow);
+                return false;
+            }
         }
     }
 }

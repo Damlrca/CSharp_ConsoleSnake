@@ -10,8 +10,9 @@ namespace CSharp_ConsoleSnake
         private readonly PointType[,] map;
         private readonly Snake snake;
         private readonly int FrameDelay;
+        private readonly Random random = new Random();
 
-        public Board(int width = 31, int height = 21, int frameDelay = 200)
+        public Board(int width = 31, int height = 21, int frameDelay = 100)
         {
             map = new PointType[width, height];
             snake = new Snake(map);
@@ -21,7 +22,18 @@ namespace CSharp_ConsoleSnake
         public void Start()
         {
             Reset();
-            // TODO ReadKey to start
+
+            // <press any button>
+            Console.BackgroundColor = (ConsoleColor)PointType.Border;
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.SetCursorPosition(0, 0);
+            Console.WriteLine("Press any key to play");
+
+            Console.ReadKey(true);
+
+            Console.SetCursorPosition(0, 0);
+            Console.WriteLine("                     ");
+            // </press any button>
 
             Stopwatch stopwatch = new Stopwatch();
             while (true)
@@ -34,9 +46,15 @@ namespace CSharp_ConsoleSnake
 
                 List<Point> ToRedraw = new List<Point>();
 
-                if (!snake.Move(key, ToRedraw))
+                bool move_done = true;
+                if (snake.Move(key, ToRedraw))
                 {
-                    //break
+                    if (ToRedraw.Count == 2)
+                        ToRedraw.Add(Generate_apple());
+                }
+                else
+                {
+                    move_done = false;
                 }
 
                 foreach (var point in ToRedraw)
@@ -44,12 +62,33 @@ namespace CSharp_ConsoleSnake
                     DrawPointOnBoard(point.Left, point.Top);
                 }
 
+                if (!move_done)
+                    break;
+
                 int t = FrameDelay - (int)stopwatch.ElapsedMilliseconds;
                 if (t > 0)
                     Thread.Sleep(t);
             }
 
-            // TODO Game over
+            // <gameover>
+            Console.BackgroundColor = (ConsoleColor)PointType.Border;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.SetCursorPosition(0, 0);
+            Console.WriteLine("Game over!");
+            // </gameover>
+        }
+
+        private Point Generate_apple()
+        {
+            int left = random.Next(map.GetLength(0));
+            int top = random.Next(map.GetLength(1));
+            while (map[left, top] != PointType.Empty)
+            {
+                left = random.Next(map.GetLength(0));
+                top = random.Next(map.GetLength(1));
+            }
+            map[left, top] = PointType.Apple;
+            return new Point(left, top);
         }
 
         private void Reset()
@@ -62,6 +101,8 @@ namespace CSharp_ConsoleSnake
                     map[i, j] = PointType.Empty;
 
             snake.Reset();
+
+            Generate_apple();
 
             Redraw();
         }
