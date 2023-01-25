@@ -11,12 +11,14 @@ namespace CSharp_ConsoleSnake
         private readonly Snake snake;
         private readonly int FrameDelay;
         private readonly Random random = new Random();
+        private int Score;
 
         public Board(int width = 31, int height = 21, int frameDelay = 100)
         {
             map = new PointType[width, height];
             snake = new Snake(map);
             FrameDelay = frameDelay;
+            Score = 0;
         }
 
         public void Start()
@@ -26,14 +28,21 @@ namespace CSharp_ConsoleSnake
             // <press any button>
             Console.BackgroundColor = (ConsoleColor)PointType.Border;
             Console.ForegroundColor = ConsoleColor.Black;
-            Console.SetCursorPosition(0, 0);
+            Console.SetCursorPosition(2, 0);
             Console.WriteLine("Press any key to play");
 
             Console.ReadKey(true);
 
-            Console.SetCursorPosition(0, 0);
+            Console.SetCursorPosition(2, 0);
             Console.WriteLine("                     ");
             // </press any button>
+
+            // <score>
+            Console.SetCursorPosition(2, 0);
+            Console.BackgroundColor = (ConsoleColor)PointType.Border;
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine($"Score: {Score}");
+            // </score>
 
             Stopwatch stopwatch = new Stopwatch();
             while (true)
@@ -50,7 +59,16 @@ namespace CSharp_ConsoleSnake
                 if (snake.Move(key, ToRedraw))
                 {
                     if (ToRedraw.Count == 2)
+                    {
+                        Score++;
+                        // <score>
+                        Console.SetCursorPosition(2, 0);
+                        Console.BackgroundColor = (ConsoleColor)PointType.Border;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.WriteLine($"Score: {Score}");
+                        // </score>
                         ToRedraw.Add(Generate_apple());
+                    }
                 }
                 else
                 {
@@ -72,9 +90,9 @@ namespace CSharp_ConsoleSnake
 
             // <gameover>
             Console.BackgroundColor = (ConsoleColor)PointType.Border;
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.SetCursorPosition(0, 0);
-            Console.WriteLine("Game over!");
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.SetCursorPosition(2, 0);
+            Console.WriteLine($"Game over! Final score: {Score}");
             // </gameover>
         }
 
@@ -93,6 +111,8 @@ namespace CSharp_ConsoleSnake
 
         private void Reset()
         {
+            Score = 0;
+
             Console.CursorVisible = false;
             Console.SetWindowSize((map.GetLength(0) + 2) * 2, map.GetLength(1) + 2);
 

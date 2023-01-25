@@ -11,7 +11,7 @@ namespace CSharp_ConsoleSnake
             while (true)
             {
                 board.Start();
-                Thread.Sleep(1000);
+                Thread.Sleep(2000);
                 Console.ReadKey(true);
             }
         }
