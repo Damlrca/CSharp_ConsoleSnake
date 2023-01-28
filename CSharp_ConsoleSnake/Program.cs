@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using ConsoleSaverUtility;
 
 namespace CSharp_ConsoleSnake
 {
@@ -7,12 +8,16 @@ namespace CSharp_ConsoleSnake
     {
         static void Main(string[] args)
         {
+            ConsoleSaver.Save();
+
+            Console.Title = "Snake";
             Board board = new Board();
             while (true)
             {
                 board.Start();
                 Thread.Sleep(2000);
-                Console.ReadKey(true);
+                if (Console.ReadKey(true).Key == ConsoleKey.Escape)
+                    ConsoleSaver.Terminate();
             }
         }
     }

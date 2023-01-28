@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using ConsoleSaverUtility;
 
 namespace CSharp_ConsoleSnake
 {
@@ -12,6 +13,8 @@ namespace CSharp_ConsoleSnake
         private readonly int FrameDelay;
         private readonly Random random = new Random();
         private int Score;
+        private const ConsoleColor textColor = ConsoleColor.Black;
+        private const ConsoleColor scoreColor = ConsoleColor.DarkRed;
 
         public Board(int width = 31, int height = 21, int frameDelay = 100)
         {
@@ -25,24 +28,9 @@ namespace CSharp_ConsoleSnake
         {
             Reset();
 
-            // <press any button>
-            Console.BackgroundColor = (ConsoleColor)PointType.Border;
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.SetCursorPosition(2, 0);
-            Console.WriteLine("Press any key to play");
+            StartMessage();
 
-            Console.ReadKey(true);
-
-            Console.SetCursorPosition(2, 0);
-            Console.WriteLine("                     ");
-            // </press any button>
-
-            // <score>
-            Console.SetCursorPosition(2, 0);
-            Console.BackgroundColor = (ConsoleColor)PointType.Border;
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine($"Score: {Score}");
-            // </score>
+            Refresh_Score();
 
             Stopwatch stopwatch = new Stopwatch();
             while (true)
@@ -53,20 +41,36 @@ namespace CSharp_ConsoleSnake
                 if (Console.KeyAvailable)
                     key = Console.ReadKey(true).Key;
 
+                bool move_done = true;
+                switch (key)
+                {
+                    case ConsoleKey.W:
+                        key = ConsoleKey.UpArrow;
+                        break;
+                    case ConsoleKey.D:
+                        key = ConsoleKey.RightArrow;
+                        break;
+                    case ConsoleKey.A:
+                        key = ConsoleKey.LeftArrow;
+                        break;
+                    case ConsoleKey.S:
+                        key = ConsoleKey.DownArrow;
+                        break;
+                    case ConsoleKey.Escape:
+                        move_done = false;
+                        break;
+                    default:
+                        break;
+                }
+
                 List<Point> ToRedraw = new List<Point>();
 
-                bool move_done = true;
                 if (snake.Move(key, ToRedraw))
                 {
                     if (ToRedraw.Count == 2)
                     {
                         Score++;
-                        // <score>
-                        Console.SetCursorPosition(2, 0);
-                        Console.BackgroundColor = (ConsoleColor)PointType.Border;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.WriteLine($"Score: {Score}");
-                        // </score>
+                        Refresh_Score();
                         ToRedraw.Add(Generate_apple());
                     }
                 }
@@ -88,12 +92,44 @@ namespace CSharp_ConsoleSnake
                     Thread.Sleep(t);
             }
 
-            // <gameover>
+            GameoverMessage();
+        }
+
+        private void StartMessage()
+        {
             Console.BackgroundColor = (ConsoleColor)PointType.Border;
-            Console.ForegroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = textColor;
             Console.SetCursorPosition(2, 0);
-            Console.WriteLine($"Game over! Final score: {Score}");
-            // </gameover>
+            Console.Write("Press any key to start");
+
+            if (Console.ReadKey(true).Key == ConsoleKey.Escape)
+                ConsoleSaver.Terminate();
+
+            Console.SetCursorPosition(2, 0);
+            Console.Write("                      ");
+        }
+
+        private void GameoverMessage()
+        {
+            Console.BackgroundColor = (ConsoleColor)PointType.Border;
+            Console.ForegroundColor = textColor;
+            Console.SetCursorPosition(2, 0);
+            Console.Write("Game over! Final score: ");
+            Console.ForegroundColor = scoreColor;
+            Console.Write(Score);
+            Console.ForegroundColor = textColor;
+            Console.Write(". Press any key to continue");
+
+        }
+
+        private void Refresh_Score()
+        {
+            Console.BackgroundColor = (ConsoleColor)PointType.Border;
+            Console.ForegroundColor = textColor;
+            Console.SetCursorPosition(2, 0);
+            Console.Write("Score: ");
+            Console.ForegroundColor = scoreColor;
+            Console.Write(Score);
         }
 
         private Point Generate_apple()
