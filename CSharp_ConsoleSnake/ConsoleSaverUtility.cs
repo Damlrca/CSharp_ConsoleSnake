@@ -17,15 +17,20 @@ namespace ConsoleSaverUtility
             defaultForegroundColor = Console.ForegroundColor;
         }
 
-        public static void Terminate()
+        public static void Load()
         {
             Console.BackgroundColor = defaultBackgroundColor;
             Console.ForegroundColor = defaultForegroundColor;
             Console.WindowWidth = defaultWidth;
             Console.WindowHeight = defaultHeight;
-            Console.Clear();
-            Console.CursorVisible = true;
 
+            Console.CursorVisible = true;
+            Console.Clear();
+        }
+
+        public static void Terminate()
+        {
+            Load();
             Environment.Exit(0);
         }
     }

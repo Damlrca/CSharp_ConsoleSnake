@@ -15,6 +15,8 @@ namespace CSharp_ConsoleSnake
         private int Score;
         private const ConsoleColor textColor = ConsoleColor.Black;
         private const ConsoleColor scoreColor = ConsoleColor.DarkRed;
+        private Queue<ConsoleKey> KeyBuffer;
+        private ConsoleKey PreviousKey;
 
         public Board(int width = 31, int height = 21, int frameDelay = 100)
         {
@@ -22,6 +24,7 @@ namespace CSharp_ConsoleSnake
             snake = new Snake(map);
             FrameDelay = frameDelay;
             Score = 0;
+            KeyBuffer = new Queue<ConsoleKey>();
         }
 
         public void Start()
@@ -37,9 +40,21 @@ namespace CSharp_ConsoleSnake
             {
                 stopwatch.Restart();
 
+                while (stopwatch.ElapsedMilliseconds < FrameDelay / 2 && Console.KeyAvailable)
+                {
+                    var temp = Console.ReadKey(true).Key;
+                    if (temp != PreviousKey)
+                    {
+                        KeyBuffer.Enqueue(temp);
+                        PreviousKey = temp;
+                    }
+                }
+
                 ConsoleKey key = ConsoleKey.Spacebar;
-                if (Console.KeyAvailable)
-                    key = Console.ReadKey(true).Key;
+                //if (Console.KeyAvailable)
+                //    key = Console.ReadKey(true).Key;
+                if (KeyBuffer.Count > 0)
+                    key = KeyBuffer.Dequeue();
 
                 bool move_done = true;
                 switch (key)
@@ -157,6 +172,9 @@ namespace CSharp_ConsoleSnake
                     map[i, j] = PointType.Empty;
 
             snake.Reset();
+
+            KeyBuffer.Clear();
+            PreviousKey = ConsoleKey.RightArrow;
 
             Generate_apple();
 
