@@ -15,7 +15,7 @@ namespace CSharp_ConsoleSnake
             while (true)
             {
                 board.Start();
-                Thread.Sleep(2000);
+                Thread.Sleep(1000);
                 if (Console.ReadKey(true).Key == ConsoleKey.Escape)
                     ConsoleSaver.Terminate();
             }
