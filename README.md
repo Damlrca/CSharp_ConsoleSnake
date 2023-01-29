@@ -1,6 +1,6 @@
 ### C# Console Snake
 
-![sreenshot](/CSharp_ConsoleSnake/sreenshot.png)
+![sreenshot](CSharp_ConsoleSnake/sreenshot.png)
 
 Змейка!
 
