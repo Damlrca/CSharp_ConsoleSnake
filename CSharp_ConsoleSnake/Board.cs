@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using ConsoleSaverUtility;
 
 namespace CSharp_ConsoleSnake
@@ -82,11 +83,13 @@ namespace CSharp_ConsoleSnake
 
                 if (snake.Move(key, ToRedraw))
                 {
-                    if (ToRedraw.Count == 2)
+                    if (ToRedraw.Count == 2) // Apple eaten
                     {
                         Score++;
                         Refresh_Score();
                         ToRedraw.Add(Generate_apple());
+
+                        Task.Run(() => Console.Beep(1200, 150));
                     }
                 }
                 else
@@ -107,6 +110,7 @@ namespace CSharp_ConsoleSnake
                     Thread.Sleep(t);
             }
 
+            Task.Run(() => Console.Beep(200, 600));
             GameoverMessage();
         }
 
